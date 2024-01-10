@@ -2,12 +2,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import Chatlist from '@/Components/ChatComponents/chatlist';
+import Chatlistview from '@/Components/ChatComponents/chatlistview';
 import MessageBubble from '@/Components/ChatComponents/MessageBubble';
 import TextInput from '@/Components/TextInput';
 export default function Chat({ auth }) {
     const [ShowSidebar,SetShowSidebar] = useState("true");
     const [newMessage, SetnewMessage] = useState('');
     const [currentChat, SetCurrentChat] = useState('');
+    const [searchedContacts, SetsearchedContacts] = useState('');
     const [messages, setMessages] = useState([]); // State to store messages
     function HandleClientMessage() {
         if (newMessage.trim() !== '') {
@@ -36,7 +38,18 @@ export default function Chat({ auth }) {
         setMessages(data.messages);
       }
 
- 
+      async function FilterList(searchedText) {
+        let text = searchedText;
+        if(text.trim().length === 0){
+            SetsearchedContacts([]);
+        }else{
+            let url = "/api/users/" + text;
+            let response = await fetch(url);
+            let data = await response.json();
+            SetsearchedContacts(data);
+        }
+        
+      }
 
     return (
         <>
@@ -44,20 +57,34 @@ export default function Chat({ auth }) {
             <div className="flex">
                 <aside className={(ShowSidebar ? 'w-1/3' : 'hidden w-0') + ' bg-slate-800 border-e-2 h-screen' }>
                     <div className="profile flex items-center p-4 h-20">
-                         <TextInput
-                            id="Search"
-                            type="text"
-                            name="search"
-                            placeholder = "Search ..."
-                            onChange = {()=>FilterList}
-                            className="bg-gray-500 w-full placeholder-slate-200 border-none mx-3"
-                         />
+                        <TextInput
+                                id="Search"
+                                type="text"
+                                name="search"
+                                placeholder = "Search ..."
+                                onChange = {(e)=>FilterList(e.target.value)}
+                                className="bg-gray-500 w-full placeholder-slate-200 border-none mx-3"
+                            />
                          {currentChat && <button className="menu w-20 self-center " onClick={()=>{SetShowSidebar((previousState) => !previousState)}}>
                             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25" className='fill-gray-200  mx-auto'>
                                 <path d="M 2 5 L 2 7 L 22 7 L 22 5 L 2 5 z M 2 11 L 2 13 L 22 13 L 22 11 L 2 11 z M 2 17 L 2 19 L 22 19 L 22 17 L 2 17 z"></path>
                             </svg>
                          </button> }
                     </div>
+                    {searchedContacts && (
+                        <div className='bg-gray-500 w-full placeholder-slate-200 border-none mx-3 p-4 rounded-md'>
+                            <ul className="list-disc list-inside">
+                            {searchedContacts.map((data) => (
+                                <Chatlistview
+                                    key={data.id}  
+                                    index={data.id}
+                                    ProfileImage={`https://randomuser.me/api/portraits/med/men/${data.id}.jpg`}
+                                    Username={data.name}
+                                />
+                            ))}
+                            </ul>
+                        </div>
+                        )}
                     <div className="contacts  bg-slate-400">
                       <Chatlist OnContactClick={handleContactClick} currentChat={currentChat.ID} />
                     </div>
