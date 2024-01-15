@@ -41,11 +41,14 @@ export default function Chat({ auth }) {
       async function FilterList(searchedText) {
         let text = searchedText;
         if(text.trim().length === 0){
-            SetsearchedContacts([]);
+            SetsearchedContacts('');
         }else{
             let url = "/api/users/" + text;
             let response = await fetch(url);
             let data = await response.json();
+            if(data.length === 0){
+                SetsearchedContacts('');
+            }
             SetsearchedContacts(data);
         }
         
