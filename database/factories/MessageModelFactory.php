@@ -17,7 +17,7 @@ class MessageModelFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => $this->faker->numberBetween(1, 10), // Assuming you have users with IDs from 1 to 10
+            'user_id' => $this->faker->numberBetween(1, 8), // Assuming you have users with IDs from 1 to 10
             'content' => $this->faker->sentence,
             'created_at' => now(),
             'updated_at' => now(),

@@ -2,6 +2,7 @@
 
 use App\Events\MessageNotification;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\chatController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,10 @@ Route::get('/message', function () {
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/chats',[chatController::class,'loadChats']);
+Route::get('/chats/{id}',[chatController::class,'loadprivatechats']);
+
 
 Route::get('/Chat', function () {
     return Inertia::render('Chat');
