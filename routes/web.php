@@ -29,17 +29,15 @@ Route::get('/', function () {
 Route::get('/message', function () {
     event(new App\Events\MessageNotification(json_encode(["data"=>"hi"])));
 });
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/chats',[chatController::class,'loadChats']);
+
 Route::get('/chats/{id}',[chatController::class,'loadprivatechats']);
 
 
-Route::get('/Chat', function () {
-    return Inertia::render('Chat');
-})->middleware(['auth', 'verified'])->name('Chat');
+Route::get('/Chat', [chatController::class,'loadChatDashboard'])->middleware(['auth', 'verified'])->name('Chat');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

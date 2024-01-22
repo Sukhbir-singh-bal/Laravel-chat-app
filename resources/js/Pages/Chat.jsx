@@ -1,11 +1,10 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { useState } from 'react';
 import { Head } from '@inertiajs/react';
 import Chatlist from '@/Components/ChatComponents/chatlist';
 import Chatlistview from '@/Components/ChatComponents/chatlistview';
 import MessageBubble from '@/Components/ChatComponents/MessageBubble';
 import TextInput from '@/Components/TextInput';
-export default function Chat({ auth }) {
+export default function Chat({Chats}) {
     const [ShowSidebar,SetShowSidebar] = useState("true");
     const [newMessage, SetnewMessage] = useState('');
     const [currentChat, SetCurrentChat] = useState('');
@@ -53,7 +52,6 @@ export default function Chat({ auth }) {
         }
         
       }
-
     return (
         <>
              <Head title="Chat" />
@@ -89,7 +87,7 @@ export default function Chat({ auth }) {
                         </div>
                         )}
                     <div className="contacts  bg-slate-400">
-                      <Chatlist OnContactClick={handleContactClick} currentChat={currentChat.ID} />
+                      <Chatlist OnContactClick={handleContactClick} currentChat={currentChat.ID} data={Chats}/>
                     </div>
                 </aside>
                 <section className={(ShowSidebar ? 'w-2/3' : 'w-full') + ' bg-slate-300 h-screen' }>

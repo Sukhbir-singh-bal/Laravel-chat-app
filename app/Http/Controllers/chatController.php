@@ -1,23 +1,27 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\MessageModel;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 
 class chatController extends Controller
 {
-    public function loadChats(){
+    public function loadChatDashboard(){
         if (Auth::check()) {
-            // User is authenticated
-            $userId = auth('api')->user()->id;
-            $SendMessages = MessageModel::select('user_id','content','HasSeen','created_at','message_to')->where('user_id',$userId)->get(); 
-            $RecvedMessages = MessageModel::select('user_id','content','HasSeen','created_at','message_to')->where('message_to',$userId)->get(); 
-            $Chats = ["SendMessages"=>$SendMessages,"RecvedMessages"=>$RecvedMessages];
-            return response()->json($Chats);
-        }else{
-            return response()->json(["Please Login to load chats"]);
+            $loggedInUserId = Auth::id();
+            $chats = MessageModel::join('users', 'messages.message_to', '=', 'users.id')
+            ->where(function ($query) use ($loggedInUserId) {
+                $query->Where('messages.message_to', $loggedInUserId)
+                ->orwhere('messages.user_id', $loggedInUserId);
+            })
+            ->select('users.name','messages.user_id','messages.message_to', 'messages.content', 'messages.HasSeen', 'messages.Seen_at')
+            ->orderBy('messages.HasSeen', 'asc') 
+            ->orderBy('messages.Seen_at', 'desc')
+            ->get();
+            return Inertia::render('Chat',["Chats"=> $chats]);
         }
     }
 
