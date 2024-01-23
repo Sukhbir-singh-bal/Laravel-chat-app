@@ -34,7 +34,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::get('/chats/{id}',[chatController::class,'loadprivatechats']);
+Route::get('/chats/load/{id}',[chatController::class,'loadprivatechats']);
 
 
 Route::get('/Chat', [chatController::class,'loadChatDashboard'])->middleware(['auth', 'verified'])->name('Chat');

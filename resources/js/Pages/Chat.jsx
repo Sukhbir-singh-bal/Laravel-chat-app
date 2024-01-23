@@ -32,11 +32,35 @@ export default function Chat({Chats}) {
         }
     }
   
-    function handleContactClick(data) {
+    async function handleContactClick(data) {
         SetCurrentChat(data);
-        setMessages(data.messages);
-      }
+        // console.log(data);
+        let url = "/chats/load/"+data.ID;
+        let response = await fetch(url);
+        let MessagesObj = await response.json();
+        MessagesObj.map((item)=>{
 
+        })
+        let Mesages =   {
+            "UserName": MessagesObj.name,
+            "messages": [
+                {
+                    "key": 0,
+                    "text": MessagesObj.content,
+                    "author": {
+                        "name": "Testing test",
+                        "avatarUrl": "https://randomuser.me/api/portraits/med/men/4.jpg"
+                    },
+                    "isSelf": false
+                }
+            ]
+        };
+        console.log(MessagesObj)
+        console.log(data)
+        SetsearchedContacts(data);
+        setMessages(Mesages);
+      }
+     console.log(Chats);
       async function FilterList(searchedText) {
         let text = searchedText;
         if(text.trim().length === 0){

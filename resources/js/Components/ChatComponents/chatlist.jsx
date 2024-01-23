@@ -13,7 +13,7 @@ export default function Chatlist(props){
                         lastSentMessage={item.content}
                         ProfileImage={`https://randomuser.me/api/portraits/med/men/${item.user_id}.jpg`}
                         Lastmessagetime={item.lastMessageTime}
-                        Username={item.name}
+                        Username={item.Sender}
                         onClickChat={props.OnContactClick}
                     />
                 ))}           
