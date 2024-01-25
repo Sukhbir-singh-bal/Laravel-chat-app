@@ -14,35 +14,44 @@ class chatController extends Controller
         if (Auth::check()) {
             $loggedInUserId = Auth::id();
             $subquery = DB::table('messages')
-                ->select(DB::raw('MAX(id) as max_id'))
-                ->where(function ($query) use ($loggedInUserId) {
-                    $query->where('user_id', $loggedInUserId)
-                        ->orWhere('message_to', $loggedInUserId);
-                })
-                ->groupBy('user_id', 'message_to');
-
-                $chats = MessageModel::select(
+            ->select(DB::raw('MAX(id) as max_id'))
+            ->where(function ($query) use ($loggedInUserId) {
+                $query->where(function ($query) use ($loggedInUserId) {
+                        $query->where('user_id', $loggedInUserId)
+                              ->orWhere('message_to', $loggedInUserId);
+                    })
+                    ->orWhere(function ($query) use ($loggedInUserId) {
+                        $query->where('user_id', $loggedInUserId)
+                              ->orWhere('message_to', $loggedInUserId);
+                    });
+            })
+            ->groupBy(DB::raw('LEAST(user_id, message_to)'), DB::raw('GREATEST(user_id, message_to)'));
+            
+            $chats = MessageModel::select(
                     'messages.id',
                     'messages.user_id',
                     'messages.content',
                     'messages.message_to',
                     'messages.HasSeen',
                     'messages.Seen_at',
-                    DB::raw('CASE WHEN messages.user_id = ? THEN users_receiver.name  ELSE users_sender.name END as Sender'),
-                    'users_sender.name as SenderName',
-                    'users_receiver.name as ReciverName'
+                    DB::raw('CASE WHEN messages.user_id = ? THEN users_receiver.name ELSE users_sender.name END as Sender'),
+                    'users_sender.name as sender_name',
+                    'users_receiver.name as receiver_name'
                 )
-                ->addBinding($loggedInUserId)
                 ->leftJoin('users as users_sender', 'messages.user_id', '=', 'users_sender.id')
                 ->leftJoin('users as users_receiver', 'messages.message_to', '=', 'users_receiver.id')
                 ->whereIn('messages.id', function ($query) use ($subquery) {
                     $query->fromSub($subquery, 'sub')
                         ->select('max_id');
                 })
-                ->orderBy('messages.Created_at', 'desc')
+                ->addBinding($loggedInUserId)
+                ->orderBy('messages.id', 'desc')
                 ->get();
-            return Inertia::render('Chat',["Chats"=> $chats]);
-        }
+                // ->toSql();
+                // return $chats;
+                // return response()->json($chats);
+                return Inertia::render('Chat',["Chats"=> $chats]);
+            }
     }
 
     public function loadprivatechats($id){

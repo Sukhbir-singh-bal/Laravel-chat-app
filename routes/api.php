@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\chatController;
+use App\Http\Controllers\Api\ChatController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,7 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/chats',[chatController::class,'loadChats']);
-Route::get('/chats/{id}',[chatController::class,'loadprivatechats']);
+Route::middleware('auth')->get('/chats/{id}',[ChatController::class,'loadprivatechats']);
 Route::get('/users/{SearchText}',[UserController::class,'filterUsers']);
 

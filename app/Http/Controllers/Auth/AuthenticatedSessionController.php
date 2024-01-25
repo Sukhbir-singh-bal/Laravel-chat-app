@@ -33,7 +33,8 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-
+        $user = Auth::user(); // Get the authenticated user
+        $user->createToken('auth_token')->plainTextToken;
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
