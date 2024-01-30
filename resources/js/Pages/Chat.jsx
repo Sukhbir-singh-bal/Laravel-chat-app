@@ -34,33 +34,41 @@ export default function Chat({Chats}) {
   
     async function handleContactClick(data) {
         SetCurrentChat(data);
-        // console.log(data);
+        console.log(data)
         let url = "/chats/load/"+data.ID;
         let response = await fetch(url);
         let MessagesObj = await response.json();
-        MessagesObj.map((item)=>{
-
+        // console.log(MessagesObj);
+        let Messages = [];
+        MessagesObj.Messages.map((message)=>{
+        let id = 0;
+        let isself = false;
+        let name = "";
+        if(message.user_id == data.ID){
+             id =  message.user_id;
+             name = message.Sender;
+        }else{
+            id = message.message_to;
+            isself = true
+            name = message.Reciver;
+        } 
+        let temp =         {
+                            "key": message.id,
+                            "text": message.content,
+                            "author": {
+                                "name": name,
+                                "avatarUrl": `https://randomuser.me/api/portraits/med/men/${id}.jpg`
+                            },
+                            "isSelf": isself,
+                            "created_at":message.created_at
+                        }
+                Messages.push(temp);
         })
-        let Mesages =   {
-            "UserName": MessagesObj.name,
-            "messages": [
-                {
-                    "key": 0,
-                    "text": MessagesObj.content,
-                    "author": {
-                        "name": "Testing test",
-                        "avatarUrl": "https://randomuser.me/api/portraits/med/men/4.jpg"
-                    },
-                    "isSelf": false
-                }
-            ]
-        };
-        console.log(MessagesObj)
-        console.log(data)
-        SetsearchedContacts(data);
-        setMessages(Mesages);
+        // console.log(Messages)
+     
+        setMessages(Messages);
       }
-     console.log(Chats);
+    //  console.log(Chats);
       async function FilterList(searchedText) {
         let text = searchedText;
         if(text.trim().length === 0){
@@ -76,6 +84,8 @@ export default function Chat({Chats}) {
         }
         
       }
+
+      
     return (
         <>
              <Head title="Chat" />
@@ -164,6 +174,7 @@ export default function Chat({Chats}) {
                                     text={message.text}
                                     author={message.author}
                                     isSelf={message.isSelf}
+                                    date_time = {message.created_at}
                                 />
                             ))}
                          </ul>

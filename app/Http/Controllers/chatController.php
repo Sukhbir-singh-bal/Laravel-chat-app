@@ -56,15 +56,17 @@ class chatController extends Controller
 
     public function loadprivatechats($id){
         $userId = Auth::id();
-        $UserInfo = User::Select("name")->where("id",$id)->get();
-        $Messages = MessageModel::select('user_id','content','HasSeen','created_at','message_to')
+        $Messages = MessageModel::select('messages.id','messages.user_id','messages.content','messages.HasSeen','messages.created_at','messages.message_to','users_sender.name as Sender','users_receiver.name as Reciver')
                     ->where(function ($query) use ($userId, $id) {
                         $query->where('user_id', $userId)->where("message_to", $id);
                     })
                     ->orWhere(function ($query) use ($id, $userId) {
                         $query->where('user_id', $id)->where("message_to", $userId);
                     })
+                    ->leftJoin('users as users_sender', 'messages.user_id', '=', 'users_sender.id')
+                     ->leftJoin('users as users_receiver', 'messages.message_to', '=', 'users_receiver.id')
+                    ->orderBy('created_at','asc')
                     ->get(); 
-        return response()->json(["UserInfo"=>$UserInfo,"Messages"=>$Messages]);
+        return response()->json(["Messages"=>$Messages]);
     }
 }

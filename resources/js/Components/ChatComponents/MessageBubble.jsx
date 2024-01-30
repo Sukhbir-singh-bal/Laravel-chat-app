@@ -1,4 +1,4 @@
-export default function MessageBubble({ text, author, isSelf = false }){
+export default function MessageBubble({ text, author, isSelf = false,date_time}){
  
      return (
         <li className={(isSelf ? "flex-row-reverse" : "" )+" flex  m-2"}>
@@ -7,6 +7,7 @@ export default function MessageBubble({ text, author, isSelf = false }){
                 {!isSelf && <p><b>{author.name}</b></p> }
                 <p>{text}</p>
              </div>
+             <div className="date">{date_time}</div>
         </li>
     );
        

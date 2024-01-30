@@ -7,7 +7,7 @@ export default function Chatlist(props){
              <ul className="rounded">
               {data.map((item) => (  
                     <Chatlistview
-                        key={item.user_id}  
+                        key={item.id}  
                         index={item.user_id}
                         Selected={(item.user_id == props.currentChat) ? true  : false}
                         lastSentMessage={item.content}

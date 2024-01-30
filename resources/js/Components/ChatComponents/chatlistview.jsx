@@ -3,14 +3,6 @@ export default function Chatlistview(props){
         let data = {
             ID : props.index,
             UserName  : props.Username,
-            messages  : [
-                            {
-                                key   :0,
-                                text  :props.lastSentMessage,
-                                author:{name:props.Username , avatarUrl : `https://randomuser.me/api/portraits/med/men/${props.index}.jpg`},
-                                isSelf:false,
-                            }
-                        ]
         }
         props.onClickChat(data)
     }
