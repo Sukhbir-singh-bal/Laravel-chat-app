@@ -35,6 +35,7 @@ Route::get('/dashboard', function () {
 
 
 Route::get('/chats/load/{id}',[chatController::class,'loadprivatechats']);
+Route::post('/chats/newMessage',[chatController::class,'StoreNewMessage']);
 
 
 Route::get('/Chat', [chatController::class,'loadChatDashboard'])->middleware(['auth', 'verified'])->name('Chat');

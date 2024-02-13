@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('messages', function (Blueprint $table) {
             $table->unsignedBigInteger('message_to');
             $table->Boolean('HasSeen')->default(false);
-            $table->date('Seen_at');
+            $table->dateTime('seen_at')->nullable()->default(null);
         });
     }
 

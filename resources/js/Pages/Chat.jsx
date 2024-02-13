@@ -3,35 +3,14 @@ import { Head } from '@inertiajs/react';
 import Chatlist from '@/Components/ChatComponents/chatlist';
 import Chatlistview from '@/Components/ChatComponents/chatlistview';
 import MessageBubble from '@/Components/ChatComponents/MessageBubble';
+import InputMessage from '@/Components/ChatComponents/InputMessage';
 import TextInput from '@/Components/TextInput';
-export default function Chat({Chats}) {
+import ProfileIco from '@/Components/ChatComponents/profileico';
+export default function Chat({Chats,UserDetails}) {
     const [ShowSidebar,SetShowSidebar] = useState("true");
-    const [newMessage, SetnewMessage] = useState('');
     const [currentChat, SetCurrentChat] = useState('');
     const [searchedContacts, SetsearchedContacts] = useState('');
     const [messages, setMessages] = useState([]); // State to store messages
-    function HandleClientMessage() {
-        if (newMessage.trim() !== '') {
-            // Create a new message object
-            const newMessageObj = {
-                text: newMessage,
-                author: { name: 'You', avatarUrl: 'your_avatar_url' },
-                isSelf: true,
-            };
-
-            // Update the messages state with the new message
-            setMessages((prevMessages) => [...prevMessages, newMessageObj]);
-
-            // Clear the input field after sending the message
-            SetnewMessage('');
-        }
-    }
-    function HandlePressEnter(event){
-        if(event.key == "Enter"){
-            HandleClientMessage();
-        }
-    }
-  
     async function handleContactClick(data) {
         SetCurrentChat(data);
         console.log(data)
@@ -68,6 +47,11 @@ export default function Chat({Chats}) {
      
         setMessages(Messages);
       }
+
+      function handelmessageUpdate(newMessageObj){
+            setMessages((prevMessages) => [...prevMessages, newMessageObj]);
+
+      }
     //  console.log(Chats);
       async function FilterList(searchedText) {
         let text = searchedText;
@@ -92,7 +76,8 @@ export default function Chat({Chats}) {
             <div className="flex">
                 <aside className={(ShowSidebar ? 'w-1/3' : 'hidden w-0') + ' bg-slate-800 border-e-2 h-screen' }>
                     <div className="profile flex items-center p-4 h-20">
-                        <TextInput
+                        <ProfileIco userInfo ={UserDetails}/>
+                            <TextInput
                                 id="Search"
                                 type="text"
                                 name="search"
@@ -115,6 +100,7 @@ export default function Chat({Chats}) {
                                     index={data.id}
                                     ProfileImage={`https://randomuser.me/api/portraits/med/men/${data.id}.jpg`}
                                     Username={data.name}
+                                    onClickChat={handleContactClick}
                                 />
                             ))}
                             </ul>
@@ -134,14 +120,7 @@ export default function Chat({Chats}) {
                                 className="menu w-20 self-center"
                                 onClick={() => SetShowSidebar((previousState) =>!previousState)}
                                 >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    x="0px"
-                                    y="0px"
-                                    width="25"
-                                    height="25"
-                                    className="fill-gray-200 mx-auto"
-                                >
+                                <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="25"  className="fill-gray-200 mx-auto" >
                                     <path d="M2 5L2 7L22 7L22 5L2 5z M2 11L2 13L22 13L22 11L2 11z M2 17L2 19L22 19L22 17L2 17z"></path>
                                 </svg>
                                 </button>
@@ -151,15 +130,15 @@ export default function Chat({Chats}) {
                         </div>
                         <div className="menu-rigth flex items-center">
                                 <button className="options cursor-pointer mx-3">
-                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.344 12.168-1.4-1.4a1.98 1.98 0 0 0-2.8 0l-.7.7a1.98 1.98 0 0 1-2.8 0l-2.1-2.1a1.98 1.98 0 0 1 0-2.8l.7-.7a1.981 1.981 0 0 0 0-2.8l-1.4-1.4a1.828 1.828 0 0 0-2.8 0C-.638 5.323 1.1 9.542 4.78 13.22c3.68 3.678 7.9 5.418 11.564 1.752a1.828 1.828 0 0 0 0-2.804Z"/>
+                                    <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m16.344 12.168-1.4-1.4a1.98 1.98 0 0 0-2.8 0l-.7.7a1.98 1.98 0 0 1-2.8 0l-2.1-2.1a1.98 1.98 0 0 1 0-2.8l.7-.7a1.981 1.981 0 0 0 0-2.8l-1.4-1.4a1.828 1.828 0 0 0-2.8 0C-.638 5.323 1.1 9.542 4.78 13.22c3.68 3.678 7.9 5.418 11.564 1.752a1.828 1.828 0 0 0 0-2.804Z"/>
                                     </svg>
                                 </button>
                                 <button className="options cursor-pointer">
                                     <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5Z" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <path d="M13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12Z" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                        <path d="M13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19Z" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                                     </svg>
                                 </button>
                         </div>
@@ -167,7 +146,6 @@ export default function Chat({Chats}) {
                     
                     <div className="text-center chat-container  p-8 flex-col flex w-full justify-between  h-[90vh]">
                          <ul className='MessageContainer  overflow-y-scroll'>
-                            <MessageBubble text="Hello" author={{ name: 'Alice', avatarUrl: `https://randomuser.me/api/portraits/med/men/${currentChat.ID}.jpg`} } />
                             {messages.map((message, index) => (
                                 <MessageBubble
                                     key={index}
@@ -179,17 +157,7 @@ export default function Chat({Chats}) {
                             ))}
                          </ul>
                          <div className="w-auto relative items-center mt-5">
-                            <input 
-                                id="Message"
-                                type="text"
-                                name="message"
-                                placeholder = "Enter Message"
-                                className="bg-gray-500 w-full  placeholder-slate-200  border-none mx-3  p-4"
-                                onChange={(e) => SetnewMessage(e.target.value)}
-                                onKeyDown={(e)=>HandlePressEnter(e)}
-                                value = {newMessage}
-                            />
-                            <button className='w-10 absolute right-0 top-2' onClick={HandleClientMessage}><img src='/assets/icons/send_ico.svg' alt='Send Btn'/></button>
+                             <InputMessage Reciver={currentChat.ID} onFormSubmit={handelmessageUpdate}/>
                          </div>
                          
                     </div>
