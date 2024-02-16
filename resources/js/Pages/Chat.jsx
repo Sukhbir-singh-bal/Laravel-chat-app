@@ -47,6 +47,20 @@ export default function Chat({Chats,UserDetails}) {
      
         setMessages(Messages);
       }
+console.log();
+let UserID = UserDetails[0].id;
+    Echo.private(`chat.${currentChat.ID}.${UserID}`)
+    .listen('PrivateChatEvent', (event) => {
+        if(event.message !== ""){
+            const newMessageObj = {
+                text: event.message,
+                author: { name: currentChat.UserName, avatarUrl: `https://randomuser.me/api/portraits/med/men/${currentChat.ID}.jpg` },
+                isSelf: false,
+            };
+            handelmessageUpdate(newMessageObj)
+        }
+        console.log('Received message:', event.message);
+    });
 
       function handelmessageUpdate(newMessageObj){
             setMessages((prevMessages) => [...prevMessages, newMessageObj]);

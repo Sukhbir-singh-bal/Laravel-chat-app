@@ -10,7 +10,7 @@ export default function InputMessage({Reciver,onFormSubmit}){
                 message: newMessage,
                 Receiver: receiverId,
             });
-            console.log("Server Response:", response.data);
+            // console.log("Server Response:", response.data);
             const newMessageObj = {
                 text: newMessage,
                 author: { name: 'You', avatarUrl: 'your_avatar_url' },

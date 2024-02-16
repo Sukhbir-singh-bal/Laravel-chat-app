@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\MessageModel;
 use App\Models\User;
+use App\Events\PrivateChatEvent;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -79,7 +80,7 @@ class chatController extends Controller
             'content' => $message,
             'message_to' => $receiverID,
         ]);
-
+        broadcast(new PrivateChatEvent($userId, $receiverID, $message));
         return response()->json($newMessage);
     }
 }

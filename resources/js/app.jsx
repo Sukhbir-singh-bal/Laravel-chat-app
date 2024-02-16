@@ -21,8 +21,8 @@ createInertiaApp({
 });
 
 
-Echo.channel('chat_channel')
-.listen('MessageNotification',(e)=>{
-   console.log(e);
-   alert("recived")
-})
+// Echo.channel('chat_channel')
+// .listen('MessageNotification',(e)=>{
+//    console.log(e);
+//    alert("recived")
+// })
